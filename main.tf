@@ -29,6 +29,12 @@ variable "visibility" {
   default     = "internal"
 }
 
+variable "master_branch_protection_enabled" {
+  type        = bool
+  description = "Whether master branch protection is enabled"
+  default     = true
+}
+
 resource "gitlab_project" "main" {
   name        = "${var.name}"
   description = "${var.description}"
@@ -44,12 +50,13 @@ resource "gitlab_project" "main" {
   merge_method                                     = "merge"
 }
 
-# resource "gitlab_branch_protection" "master" {
-#   project            = "${gitlab_project.main.id}"
-#   branch             = "master"
-#   push_access_level  = "no one"
-#   merge_access_level = "maintainer"
-# }
+resource "gitlab_branch_protection" "master" {
+  count              = var.master_branch_protection_enabled ? 1 : 0
+  project            = "${gitlab_project.main.id}"
+  branch             = "master"
+  push_access_level  = "no one"
+  merge_access_level = "maintainer"
+}
 
 # resource "gitlab_branch_protection" "release" {
 #   project            = "${gitlab_project.main.id}"
