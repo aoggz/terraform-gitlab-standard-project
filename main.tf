@@ -35,6 +35,12 @@ variable "master_branch_protection_enabled" {
   default     = true
 }
 
+variable "repo_destruction_protection_disabled" {
+  type        = bool
+  description = "Whether gitlab_project resource is protected from distruction"
+  default     = false
+}
+
 resource "gitlab_project" "main" {
   name        = "${var.name}"
   description = "${var.description}"
@@ -48,6 +54,21 @@ resource "gitlab_project" "main" {
   only_allow_merge_if_pipeline_succeeds            = true
   only_allow_merge_if_all_discussions_are_resolved = true
   merge_method                                     = "merge"
+}
+
+# Prevents destruction of user_pool in controlled stages 
+# https://github.com/hashicorp/terraform/issues/3116#issuecomment-292038781
+resource "random_id" "protector" {
+  count       = var.repo_destruction_protection_disabled ? 0 : 1
+  byte_length = 8
+
+  keepers = {
+    cup_id = gitlab_project.main.id
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "gitlab_branch_protection" "master" {
