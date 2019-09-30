@@ -41,12 +41,18 @@ variable "repo_destruction_protection_disabled" {
   default     = false
 }
 
+variable "repo_shared_runners_enabled" {
+  type        = bool
+  description = "Whether shared runners are enabled for the gitlab_project"
+  default     = true
+}
+
 resource "gitlab_project" "main" {
   name        = "${var.name}"
   description = "${var.description}"
 
   visibility_level                                 = "internal"
-  namespace_id                                     = "${var.parent_id}"
+  namespace_id                                     = var.parent_id
   default_branch                                   = "master"
   issues_enabled                                   = false
   merge_requests_enabled                           = true
@@ -54,6 +60,7 @@ resource "gitlab_project" "main" {
   only_allow_merge_if_pipeline_succeeds            = true
   only_allow_merge_if_all_discussions_are_resolved = true
   merge_method                                     = "merge"
+  shared_runners_enabled                           = var.repo_shared_runners_enabled
 }
 
 # Prevents destruction of user_pool in controlled stages 
