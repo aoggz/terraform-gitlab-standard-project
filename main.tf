@@ -23,12 +23,6 @@ variable "slack_webhook_url" {
   description = "Webhook URL to use for Slack service integration"
 }
 
-variable "visibility" {
-  type        = string
-  description = "Visibility setting of GitLab project"
-  default     = "internal"
-}
-
 variable "master_branch_protection_enabled" {
   type        = bool
   description = "Whether master branch protection is enabled"
@@ -87,18 +81,18 @@ resource "gitlab_branch_protection" "master" {
   merge_access_level = "maintainer"
 }
 
-# resource "gitlab_branch_protection" "release" {
-#   project            = "${gitlab_project.main.id}"
-#   branch             = "release/*"
-#   push_access_level  = "no one"
-#   merge_access_level = "maintainer"
-# }
+resource "gitlab_branch_protection" "release" {
+  project            = "${gitlab_project.main.id}"
+  branch             = "release/*"
+  push_access_level  = "no one"
+  merge_access_level = "maintainer"
+}
 
-# resource "gitlab_tag_protection" "all" {
-#   project             = "${gitlab_project.main.id}"
-#   tag                 = "*"
-#   create_access_level = "no one"
-# }
+resource "gitlab_tag_protection" "all" {
+  project             = "${gitlab_project.main.id}"
+  tag                 = "*"
+  create_access_level = "no one"
+}
 
 
 resource "gitlab_service_slack" "slack" {
@@ -111,4 +105,9 @@ resource "gitlab_service_slack" "slack" {
   merge_requests_events = true
   pipeline_events       = true
   tag_push_events       = true
+}
+
+output "gitlab_project_id" {
+  value       = gitlab_project.main.id
+  description = "Id of created GitLab project"
 }
