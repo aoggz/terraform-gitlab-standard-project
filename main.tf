@@ -55,7 +55,7 @@ resource "gitlab_project" "main" {
   only_allow_merge_if_all_discussions_are_resolved = true
   merge_method                                     = "merge"
   shared_runners_enabled                           = var.repo_shared_runners_enabled
-  initialize_with_readme                           = true
+  # initialize_with_readme                           = true
 }
 
 # Prevents destruction of user_pool in controlled stages 
