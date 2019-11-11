@@ -5,12 +5,17 @@ terraform {
 
 variable "name" {
   type        = string
-  description = "Name of project to create"
+  description = "Name of project"
 }
 
 variable "description" {
   type        = string
   description = "Description of project"
+}
+
+variable "path" {
+  type        = string
+  description = "Path of project"
 }
 
 variable "parent_id" {
@@ -42,8 +47,9 @@ variable "repo_shared_runners_enabled" {
 }
 
 resource "gitlab_project" "main" {
-  name        = "${var.name}"
-  description = "${var.description}"
+  name        = var.name
+  path        = var.path
+  description = var.description
 
   visibility_level                                 = "internal"
   namespace_id                                     = var.parent_id
@@ -75,29 +81,29 @@ resource "random_id" "protector" {
 
 resource "gitlab_branch_protection" "master" {
   count              = var.master_branch_protection_enabled ? 1 : 0
-  project            = "${gitlab_project.main.id}"
+  project            = gitlab_project.main.id
   branch             = "master"
   push_access_level  = "no one"
   merge_access_level = "maintainer"
 }
 
 resource "gitlab_branch_protection" "release" {
-  project            = "${gitlab_project.main.id}"
+  project            = gitlab_project.main.id
   branch             = "release/*"
   push_access_level  = "no one"
   merge_access_level = "maintainer"
 }
 
 resource "gitlab_tag_protection" "all" {
-  project             = "${gitlab_project.main.id}"
+  project             = gitlab_project.main.id
   tag                 = "*"
-  create_access_level = "no one"
+  create_access_level = "maintainer"
 }
 
 
 resource "gitlab_service_slack" "slack" {
-  project  = "${gitlab_project.main.id}"
-  webhook  = "${var.slack_webhook_url}"
+  project  = gitlab_project.main.id
+  webhook  = var.slack_webhook_url
   username = "GitLab"
 
   notify_only_default_branch = true
