@@ -16,6 +16,7 @@ variable "description" {
 variable "path" {
   type        = string
   description = "Path of project"
+  default     = null
 }
 
 variable "parent_id" {
