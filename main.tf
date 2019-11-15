@@ -26,7 +26,7 @@ variable "parent_id" {
 
 variable "project_push_rules_branch_name_regex" {
   type    = string
-  default = "^(release\\/\\d+\\.\\d+)|((feature|hotfix|bugfix)\\/.+)|((cherry-pick|revert)-.+)$"
+  default = "^(release\\/\\d+\\.\\d+)|((feature|hotfix|bugfix|renovate)\\/.+)|((cherry-pick|revert)-.+)$"
 }
 
 variable "project_push_rules_commit_message_regex" {
