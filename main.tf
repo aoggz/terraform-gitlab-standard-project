@@ -24,6 +24,16 @@ variable "parent_id" {
   description = "Id of parent group"
 }
 
+variable "project_push_rules_branch_name_regex" {
+  type    = string
+  default = "^(release\\/\\d+\\.\\d+)|((feature|hotfix|bugfix)\\/.+)|((cherry-pick|revert)-.+)$"
+}
+
+variable "project_push_rules_commit_message_regex" {
+  type    = string
+  default = "^(ci|chore|docs|feat|feature|fix|refactor|test|BREAKING_CHANGE):.*"
+}
+
 variable "slack_webhook_url" {
   type        = string
   description = "Webhook URL to use for Slack service integration"
@@ -63,6 +73,15 @@ resource "gitlab_project" "main" {
   merge_method                                     = "merge"
   shared_runners_enabled                           = var.repo_shared_runners_enabled
   # initialize_with_readme                           = true
+}
+
+resource "gitlab_project_push_rules" "main" {
+  commit_message_regex   = var.project_push_rules_commit_message_regex
+  project                = gitlab_project.main.id
+  deny_delete_tag        = true
+  prevent_secrets        = true
+  branch_name_regex      = var.project_push_rules_branch_name_regex
+  commit_committer_check = true
 }
 
 # Prevents destruction of user_pool in controlled stages 
