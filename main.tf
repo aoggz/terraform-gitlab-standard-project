@@ -31,7 +31,7 @@ variable "project_push_rules_branch_name_regex" {
 
 variable "project_push_rules_commit_message_regex" {
   type    = string
-  default = "^(ci|chore|docs|feat|feature|fix|refactor|test|BREAKING_CHANGE):.*"
+  default = "^(Merge)|((ci|chore|docs|feat|feature|fix|refactor|test|BREAKING_CHANGE):).*"
 }
 
 variable "slack_webhook_url" {
