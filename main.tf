@@ -76,12 +76,12 @@ resource "gitlab_project" "main" {
 }
 
 resource "gitlab_project_push_rules" "main" {
-  commit_message_regex   = var.project_push_rules_commit_message_regex
-  project                = gitlab_project.main.id
-  deny_delete_tag        = true
-  prevent_secrets        = true
-  branch_name_regex      = var.project_push_rules_branch_name_regex
-  commit_committer_check = true
+  commit_message_regex = var.project_push_rules_commit_message_regex
+  project              = gitlab_project.main.id
+  deny_delete_tag      = true
+  prevent_secrets      = true
+  branch_name_regex    = var.project_push_rules_branch_name_regex
+  # commit_committer_check = true
 }
 
 # Prevents destruction of user_pool in controlled stages 
