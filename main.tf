@@ -71,6 +71,12 @@ variable "repo_shared_runners_enabled" {
   default     = true
 }
 
+variable "merge_method" {
+  type        = string
+  description = "Merge method to use on merge requests"
+  default     = "merge"
+}
+
 resource "gitlab_project" "main" {
   name        = var.name
   path        = var.path
@@ -84,7 +90,7 @@ resource "gitlab_project" "main" {
   approvals_before_merge                           = 1
   only_allow_merge_if_pipeline_succeeds            = var.only_allow_merge_if_pipeline_succeeds
   only_allow_merge_if_all_discussions_are_resolved = true
-  merge_method                                     = "merge"
+  merge_method                                     = var.merge_method
   shared_runners_enabled                           = var.repo_shared_runners_enabled
   # initialize_with_readme                           = true
 }
