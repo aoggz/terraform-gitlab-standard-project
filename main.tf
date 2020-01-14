@@ -24,14 +24,28 @@ variable "parent_id" {
   description = "Id of parent group"
 }
 
+variable "only_allow_merge_if_pipeline_succeeds" {
+  type        = bool
+  description = "Merges can only succeed if a pipeline exists and succeeds"
+  default     = true
+}
+
+variable "project_push_rules_enabled" {
+  type        = bool
+  description = "Whether push rules will be created"
+  default     = false
+}
+
 variable "project_push_rules_branch_name_regex" {
-  type    = string
-  default = "^(release\\/\\d+\\.\\d+)|((feature|hotfix|bugfix|renovate)\\/.+)|((cherry-pick|revert)-.+)$"
+  type        = string
+  default     = "^(release\\/\\d+\\.\\d+)|((feature|hotfix|bugfix|renovate)\\/.+)|((cherry-pick|revert)-.+)$"
+  description = "Required branch name. Only used if project_push_rules_enabled = true"
 }
 
 variable "project_push_rules_commit_message_regex" {
-  type    = string
-  default = "^(Merge)|((ci|chore|docs|feat|feature|fix|refactor|test|BREAKING_CHANGE):).*"
+  type        = string
+  default     = "^(Merge)|((ci|chore|docs|feat|feature|fix|refactor|test|BREAKING_CHANGE):).*"
+  description = "Required commit message syntax. Only used if project_push_rules_enabled = true"
 }
 
 variable "slack_webhook_url" {
@@ -68,7 +82,7 @@ resource "gitlab_project" "main" {
   issues_enabled                                   = false
   merge_requests_enabled                           = true
   approvals_before_merge                           = 1
-  only_allow_merge_if_pipeline_succeeds            = true
+  only_allow_merge_if_pipeline_succeeds            = var.only_allow_merge_if_pipeline_succeeds
   only_allow_merge_if_all_discussions_are_resolved = true
   merge_method                                     = "merge"
   shared_runners_enabled                           = var.repo_shared_runners_enabled
@@ -76,6 +90,7 @@ resource "gitlab_project" "main" {
 }
 
 resource "gitlab_project_push_rules" "main" {
+  count                = var.project_push_rules_enabled ? 0 : 1
   commit_message_regex = var.project_push_rules_commit_message_regex
   project              = gitlab_project.main.id
   deny_delete_tag      = true
