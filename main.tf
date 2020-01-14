@@ -33,7 +33,7 @@ variable "only_allow_merge_if_pipeline_succeeds" {
 variable "project_push_rules_enabled" {
   type        = bool
   description = "Whether push rules will be created"
-  default     = false
+  default     = true
 }
 
 variable "project_push_rules_branch_name_regex" {
