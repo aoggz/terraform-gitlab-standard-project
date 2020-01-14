@@ -96,7 +96,7 @@ resource "gitlab_project" "main" {
 }
 
 resource "gitlab_project_push_rules" "main" {
-  count                = var.project_push_rules_enabled ? 0 : 1
+  count                = var.project_push_rules_enabled ? 1 : 0
   commit_message_regex = var.project_push_rules_commit_message_regex
   project              = gitlab_project.main.id
   deny_delete_tag      = true
