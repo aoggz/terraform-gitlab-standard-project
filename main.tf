@@ -63,6 +63,12 @@ variable "merge_method" {
   default     = "merge"
 }
 
+variable "require_pipeline_for_merge" {
+  type        = bool
+  description = "Only allow a merge if the pipeline succeeds"
+  default     = true
+}
+
 resource "gitlab_project" "main" {
   name        = var.name
   path        = var.path
@@ -74,7 +80,7 @@ resource "gitlab_project" "main" {
   issues_enabled                                   = false
   merge_requests_enabled                           = true
   approvals_before_merge                           = 1
-  only_allow_merge_if_pipeline_succeeds            = true
+  only_allow_merge_if_pipeline_succeeds            = var.require_pipeline_for_merge
   only_allow_merge_if_all_discussions_are_resolved = true
   merge_method                                     = var.merge_method
   shared_runners_enabled                           = var.repo_shared_runners_enabled
