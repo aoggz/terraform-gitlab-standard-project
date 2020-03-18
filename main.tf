@@ -59,6 +59,12 @@ variable "master_branch_protection_enabled" {
   default     = true
 }
 
+variable "release_branch_protection_enabled" {
+  type        = bool
+  description = "Whether release/* branch protection is enabled"
+  default     = true
+}
+
 variable "repo_destruction_protection_disabled" {
   type        = bool
   description = "Whether gitlab_project resource is protected from distruction"
@@ -129,6 +135,7 @@ resource "gitlab_branch_protection" "master" {
 }
 
 resource "gitlab_branch_protection" "release" {
+  count              = var.release_branch_protection_enabled ? 1 : 0
   project            = gitlab_project.main.id
   branch             = "release/*"
   push_access_level  = "no one"
