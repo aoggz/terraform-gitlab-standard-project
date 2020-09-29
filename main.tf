@@ -1,10 +1,10 @@
 
 terraform {
   required_version = ">= 0.12.0"
-}
 
-provider "gitlab" {
-  version = "~> 2.11"
+  required_providers {
+    gitlab = "~> 2.11"
+  }
 }
 
 variable "name" {
