@@ -3,6 +3,10 @@ terraform {
   required_version = ">= 0.12.0"
 }
 
+provider "gitlab" {
+  version = "~> 2.11"
+}
+
 variable "name" {
   type        = string
   description = "Name of project"
@@ -92,6 +96,7 @@ resource "gitlab_project" "main" {
   namespace_id                                     = var.parent_id
   default_branch                                   = "master"
   issues_enabled                                   = false
+  initialize_with_readme                           = true
   merge_requests_enabled                           = true
   approvals_before_merge                           = 1
   only_allow_merge_if_pipeline_succeeds            = var.only_allow_merge_if_pipeline_succeeds
